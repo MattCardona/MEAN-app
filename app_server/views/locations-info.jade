@@ -1,0 +1,82 @@
+extends layout
+
+block content
+  .row.page-header
+    .col-lg-12
+      h1 GreenMermaid
+  .row
+    .col-xs-12.col-md-9
+      .row
+        .col-xs-12.col-sm-6
+          p.rating
+            span.fa.fa-star
+            span.fa.fa-star
+            span.fa.fa-star
+            span.fa.fa-star-o
+            span.fa.fa-star-o
+          p.address 44 Low Street, Sacramento, 95554
+          .panel.panel-primary
+            .panel-heading
+              h2.panel-title Opening Hours
+            .panel-body
+              p Monday - Friday : 5am - 8pm
+              p Saturday : 8am - 5pm
+              p Sunday : Closed
+          .panel.panel-primary
+            .panel-heading
+              h2.panel-title Facilities
+            .panel-body
+              span.label.label-warning
+                span.fa.fa-check
+                | &nbsp; Hot drinks
+              | &nbsp
+              span.label.label-warning
+                span.fa.fa-check
+                | &nbsp; Food
+              | &nbsp
+              span.label.label-warning
+                span.fa.fa-check
+                | &nbsp; High speed Wifi
+              | &nbsp
+        .col-xs-12.col-sm-6.location-map
+          .panel.panel-primary
+            .panel-heading
+              h2.panel-title Location Map
+            .panel-body
+              img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=51.455041,-0.9690884&zoom=17&size=400x350&sensor=false&markers=51.45041,-0.9690884&scale=2')
+      .row
+        .col-xs-12
+          .panel.panel-primary.review-panel
+            .panel-heading
+              a.btn.btn-default.pull-right(href='/location/review/new') Add review
+              h2.panel-title Customer reviews
+            .panel-body.review-container
+              .row
+                .review
+                  .well.well-sm.review-header
+                    span.rating
+                      span.fa.fa-star
+                      span.fa.fa-star
+                      span.fa.fa-star
+                      span.fa.fa-star-o
+                      span.fa.fa-star-o
+                    span.reviewAuthor Ralph C
+                    small.reviewTimestamp  27 July 2017
+                  .col-xs-12
+                    p Good place. Did not serve pup-achinos.
+              .row
+                .review
+                  .well.well-sm.review-header
+                    span.rating
+                      span.fa.fa-star
+                      span.fa.fa-star
+                      span.fa.fa-star
+                      span.fa.fa-star-o
+                      span.fa.fa-star-o
+                    span.reviewAuthor Ty S
+                    small.reviewTimestamp  4 July 2017
+                  .col-xs-12
+                    p Good coffee, bad serves. Shame because the coffee was delicious.
+    .col-xs-12.col-md-3
+      p.lead GreenMermaid's cafe is on Wifi4Free because it has free wifi and comfy space to get some work done on your laptops.
+      p If you've been here and like it - or it did not - please leave a review of the place - so others can be informed.

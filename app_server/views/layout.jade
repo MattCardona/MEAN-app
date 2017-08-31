@@ -5,7 +5,26 @@ html
     title= title
     link(rel='stylesheet', href='/bootstrap-4/css/amelia.bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet" href='//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
   body
-    block content
-    script(src='/javascript/jquery-3.2.1.min.js')
+    .navbar.navbar-default.navbar-fixed-top
+     .container
+       .navbar-header
+         a.navbar-brand(href='/') Wifi4Free
+         button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-main')
+             span.icon-bar
+             span.icon-bar
+             span.icon-bar
+       #navbar-main.navbar-collapse.collapse
+         ul.nav.navbar-nav
+           li
+             a(href='/about/') About
+    .container
+      block content
+
+      footer
+        .row
+          .col-xs-12
+            small &copy; Matt C 2017
+    script(src='/javascripts/jquery-3.2.1.min.js')
     script(src='/bootstrap-4/js/bootstrap.min.js')
