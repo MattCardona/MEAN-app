@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+require('../config/config.js');
+
 /**
  * Module dependencies.
  */
 //MAtt added this cannot get working on heroku
-require('../config/config.js');
+
 var app = require('../app');
 var debug = require('debug')('getting-mean:server');
 var http = require('http');
