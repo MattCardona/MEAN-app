@@ -134,7 +134,15 @@ var locationsUpdateOne = (req, res) => {
 };
 
 var locationsDeleteOne = (req, res) => {
-  sendJsonRes(res, 200, {"status" : "success"});
+  var id = req.params.locationid;
+  if(!ObjectID.isValid(id)){
+    sendJsonRes(res, 404, {"message": `The id: ${id} is invaild.`});
+  }
+  Loc.findByIdAndRemove(id).then(() => {
+    sendJsonRes(res, 204, null);
+  }, (err) => {
+    sendJsonRes(res, 404, err);
+  });
 };
 
 module.exports = {locationsListByDistance, locationsCreate, locationsReadOne, locationsUpdateOne, locationsDeleteOne};
