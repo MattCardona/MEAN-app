@@ -11,11 +11,10 @@ var doAverageRating = (location) => {
 
   if(location.reviews && location.reviews.length > 0){
     reviewCount = location.reviews.length;
-    ratingTotal = 0;
-    location.reviews.reduce((memo, current) => {
+    ratingTotal = location.reviews.reduce((memo, current, i, arr) => {
       memo += current.rating;
       return memo;
-    }, ratingTotal);
+    }, 0);
     ratingAverage = parseInt(ratingTotal / reviewCount, 10);
     location.rating = ratingAverage;
     location.save().then((location) => {
