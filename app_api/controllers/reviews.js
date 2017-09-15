@@ -101,8 +101,37 @@ var reviewsReadOne = (req, res) => {
 };
 
 var reviewsUpdateOne = (req, res) => {
-  sendJsonRes(res, 200, {"status" : "success"});
+  var locationId = req.params.locationid;
+  var reviewId = req.params.reviewid;
+
+  if(!ObjectID.isValid(locationId) || !ObjectID.isValid(reviewId)){
+    sendJsonRes(res, 404, {"message": `The locationId: ${locationId} or the reviewId: ${reviewId} are invaild.`});
+  }
+  Loc.findById(locationId).select('reviews').then((location) => {
+    if(!location){
+      sendJsonRes(res, 404, {"message": `Location with the locationId of: ${locationId} not found`});
+    }
+    if(location.reviews && location.reviews.length > 0){
+      var review = location.reviews.id(reviewId);
+      if(!review){
+        sendJsonRes(res, 404, {"message": `location Review with review id of: ${reviewId} not found.`});
+      }
+      review.author = req.body.author;
+      review.rating = req.body.rating;
+      review.reviewText = req.body.reviewText;
+      //save your instance updates
+      location.save().then((location) => {
+        updateAverageRating(location._id);
+        sendJsonRes(res, 200, review);
+      }, (err) => {
+        sendJsonRes(res, 404, err);
+      });
+    }
+  }).catch((err) => {
+    sendJsonRes(res, 404, err);
+  });
 };
+
 var reviewsDeleteOne = (req, res) => {
   sendJsonRes(res, 200, {"status" : "success"});
 };

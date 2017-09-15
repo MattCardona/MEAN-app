@@ -106,7 +106,7 @@ var locationsUpdateOne = (req, res) => {
     // return res.status(404).send();
     sendJsonRes(res, 404, {"message": `The id: ${id} is invaild.`});
   }
-  Loc.findById(id).then((location) => {
+  Loc.findById(id).select('-reviews -rating').then((location) => {
     if(!location){
       sendJsonRes(res, 404, {"message": `Location with the id of: ${id} not found`})
     }
