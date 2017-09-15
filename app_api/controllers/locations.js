@@ -99,8 +99,40 @@ var locationsReadOne = (req, res) => {
 };
 
 var locationsUpdateOne = (req, res) => {
-  sendJsonRes(res, 200, {"status" : "success"});
+  var id = req.params.locationid;
+
+  if(!ObjectID.isValid(id)){
+    console.log(`The id ${id} is invalid!`);
+    // return res.status(404).send();
+    sendJsonRes(res, 404, {"message": `The id: ${id} is invaild.`});
+  }
+  Loc.findById(id).then((location) => {
+    if(!location){
+      sendJsonRes(res, 404, {"message": `Location with the id of: ${id} not found`})
+    }
+    location.name = req.body.name;
+    location.address = req.body.address;
+    location.facilities = req.body.facilities.split(",");
+    location.coords = [parseFloat(req.body.lng), parseFloat(req.body.lat)];
+    // location.openingTimes: [{
+    //   days: req.body.days1,
+    //   opening: req.body.opening1,
+    //   closing: req.body.closing1,
+    //   closed: req.body.closed1,
+    //   },{
+    //   days: req.body.days2,
+    //   opening: req.body.opening2,
+    //   closing: req.body.closing2,
+    //   closed: req.body.closed2
+    // }];
+    location.save().then((locationUpdated) => {
+      sendJsonRes(res, 200, locationUpdated);
+    }).catch((err) => {
+      sendJsonRes(res, 404, err);
+    });
+  });
 };
+
 var locationsDeleteOne = (req, res) => {
   sendJsonRes(res, 200, {"status" : "success"});
 };
