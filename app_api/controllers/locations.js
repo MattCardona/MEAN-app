@@ -138,7 +138,10 @@ var locationsDeleteOne = (req, res) => {
   if(!ObjectID.isValid(id)){
     sendJsonRes(res, 404, {"message": `The id: ${id} is invaild.`});
   }
-  Loc.findByIdAndRemove(id).then(() => {
+  Loc.findByIdAndRemove(id).then((location) => {
+    if(!location){
+      sendJsonRes(res, 404, {"message": `Location with the id of: ${id} not found`})
+    }
     sendJsonRes(res, 204, null);
   }, (err) => {
     sendJsonRes(res, 404, err);

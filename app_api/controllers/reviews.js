@@ -155,6 +155,8 @@ var reviewsDeleteOne = (req, res) => {
           sendJsonRes(res, 404, err);
         });
       }
+    }else{
+      sendJsonRes(res, 404, {"message": "No reviews to delete"})
     }
   }).catch((err) => {
     sendJsonRes(res, 404, err);
