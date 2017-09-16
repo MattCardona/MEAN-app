@@ -133,7 +133,32 @@ var reviewsUpdateOne = (req, res) => {
 };
 
 var reviewsDeleteOne = (req, res) => {
-  sendJsonRes(res, 200, {"status" : "success"});
+  var reviewId = req.params.reviewid;
+  var locationId = req.params.locationid;
+
+  if(!ObjectID.isValid(locationId) || !ObjectID.isValid(reviewId)){
+    sendJsonRes(res, 404, {"message": `The locationId: ${locationId} or the reviewId: ${reviewId} are invaild.`});
+  }
+  Loc.findById(locationId).select('reviews').then((location) => {
+    if(!location){
+      sendJsonRes(res, 404, {"message": `Location with the locationId of: ${locationId} not found`});
+    }
+    if(location.reviews && location.reviews.length > 0){
+      if(!location.reviews.id(reviewId)){
+        sendJsonRes(res, 404, {"message": "Reviewid not found"});
+      }else{
+        location.reviews.id(reviewId).remove();
+        location.save().then((location) => {
+          updateAverageRating(location._id);
+          sendJsonRes(res, 204, null);
+        }, (err) => {
+          sendJsonRes(res, 404, err);
+        });
+      }
+    }
+  }).catch((err) => {
+    sendJsonRes(res, 404, err);
+  });
 };
 
 module.exports = {reviewsCreate, reviewsReadOne, reviewsUpdateOne, reviewsDeleteOne};
