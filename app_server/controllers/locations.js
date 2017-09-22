@@ -1,31 +1,68 @@
-var homeList = (req, res, next) => {
+var request = require('request');
+
+var apiOptions = {
+  sever: "http://localhost:3000"
+};
+
+if(process.env.NODE_ENV === 'production'){
+  apiOptions.sever = "https://wifi4free.herokuapp.com"
+}
+
+var _formatDistance = (distance) => {
+  var numDistance;
+  var unit;
+  if(distance > 1){
+    numDistance = parseFloat(distance / 1000).toFixed(1);
+    unit = 'km';
+  }else{
+    numDistance = parseFloat(distance, 10);
+    unit = 'm';
+  }
+  return numDistance + unit;
+};
+
+var renderHomepage = (req, res, responseBody) => {
+  var message;
+  if(!Array.isArray(responseBody)){
+    message = "API lookup error";
+    responseBody = [];
+  }else if(!responseBody.length){
+    message = "No places found nearby";
+  }
   res.render('locations-list', {title: 'Wifi4Free - Find places to work with wifi near you',
     pageHeader: {
       title: 'Wifi4Free',
       strapline: 'Find places to work with wifi near you'
     },
     sidebar: 'Looking for free wifi and a cup of Joe or a pitcher of beer? Wifi4Free will help you find a place to work when out on the town. Let us at Wifi4Free help you out with finding a place with free wifi.',
-    locations: [{
-      name: 'GreenMermaid',
-      address: '44 Low Street, Sacramento, 95554',
-      rating: 3,
-      facilities: ['Hot drinks', 'Food', 'High Speed Wifi'],
-      distance: '12m'
-    },{
-      name: 'Roasted',
-      address: '444 Lower Street, Sacramento, 95554',
-      rating: 4,
-      facilities: ['Hot drinks', 'Food', 'High Speed Wifi'],
-      distance: '10m'
-    },{
-      name: 'Paddys',
-      address: '4444 Below Street, Sacramento, 95554',
-      rating: 5,
-      facilities: ['Cold beers', 'Food', 'High Speed Wifi'],
-      distance: '5m'
-    }]
+    locations: responseBody,
+    message: message
 } );
+}
+
+var homeList = (req, res, next) => {
+  var path = '/api/locations';
+  var requestOptions = {
+    url: apiOptions.sever + path,
+    method: "GET",
+    json: {},
+    qs: {
+      lng: -121.5370557,
+      lat: 38.5681132,
+      maxDis: 20
+    }
+  }
+  request(requestOptions, (err, response, body) => {
+    var data = body;
+    if(response.statusCode === 200 && data.length){
+        data.forEach((location) => {
+          location.distance = _formatDistance(location.distance);
+        });
+      }
+    renderHomepage(req, res, data);
+  });
 };
+
 var locationInfo = (req, res, next) => {
   res.render('locations-info', {title: 'GreenMermaid',
     pageHeader: {title: 'GreenMermaid'},

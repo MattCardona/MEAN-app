@@ -3,11 +3,13 @@ var {ObjectID} = require('mongodb');
 var Loc = mongoose.model('Location');
 
 var theEarth = (() => {
- var earthRadius = 6371; //kilometers = to 3959 miles
+ var earthRadius = 3959; //6371 kilometers = to 3959 miles
+
  var getDistanceFromRads = (rads) => {
   return parseFloat(rads * earthRadius);
  };
  var getRadsFromDistance = (distance) => {
+  console.log();
   return parseFloat(distance / earthRadius);
  };
 
@@ -20,36 +22,40 @@ var sendJsonRes = (res, status, content) => {
 
 var locationsListByDistance = (req, res) => {
   var {lng, lat, maxDis} = req.query;
+  var lng = parseFloat(lng);
+  var lat = parseFloat(lat);
   var point = {
     type: "Point",
-    coordinates: [parseFloat(lng), parseFloat(lat)]
+    coordinates: [lng, lat]
   };
   var geoOptions = {
     spherical: true,
     num: 10,
-    maxDistance: theEarth.getRadsFromDistance(maxDis)
+    // maxDistance: theEarth.getRadsFromDistance(maxDis)
   };
 
-  if(!lng || !lat){
+  if((!lng && lat!==0) || (!lat && lng!==0)){
     sendJsonRes(res, 404, {"message": "lng and lat query parameters are required"})
-  }
-  Loc.geoNear(point, geoOptions, (err, result, stats) => {
-    if(err){
-      sendJsonRes(res, 404, err);
-    }else{
-    var locations = result.map((doc) => {
-      return {
-        distance: theEarth.getDistanceFromRads(doc.distance),
-        name: doc.obj.name,
-        address: doc.obj.address,
-        rating: doc.obj.rating,
-        facilities: doc.obj.facilities,
-        _id: doc.obj._id
-      }
-    });
+  }else{
+    Loc.geoNear(point, geoOptions, (err, result, stats) => {
+      if(err){
+        sendJsonRes(res, 404, err);
+      }else{
+      var locations = result.map((doc) => {
+        // console.log('distance of doc ***', doc.dis);
+        return {
+          distance: doc.dis,
+          name: doc.obj.name,
+          address: doc.obj.address,
+          rating: doc.obj.rating,
+          facilities: doc.obj.facilities,
+          _id: doc.obj._id
+        }
+      });
   sendJsonRes(res, 200, locations);
     }
   });
+  }
 
 };
 
